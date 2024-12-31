@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Processing Terminal</title>
+    <style>
+
+        
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-size: 16px;
+            line-height: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .border-line {
+            color: #00ff00;
+            width: 100%;
+            text-align: center;
+            margin: 0 0;
+            font-size: 24px;
+            animation: textFlicker 0.05s infinite;
+            background-color: rgb(255, 0, 217);
+        }
+
+        .ascii-title {
+            text-align: center;
+            color: #00ff00;
+            white-space: pre;
+            line-height: 1.2;
+            font-family: 'Courier New', monospace;
+            font-size: 25px;
+            text-shadow: 0 0 5px #00ff00;
+            animation: textFlicker 0.05s infinite;
+           
+            
+        }
+        .header-text {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            color: #00ff00;
+            white-space: pre;
+            line-height: 1.2;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            text-shadow: 0 0 5px #00ff00;
+            /* animation: textFlicker 0.05s infinite; */
+           
+            
+        }
+
+       
+
+
+        .system-messages {
+            color: #00ff00;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 10px;
+            animation: textFlicker 0.05s infinite;
+            /* animation: fadeIn 2s ease-in; */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Header Section (1/3) */
+        .header {
+            height: 40.0vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* border-bottom: 2px solid #00ff00; */
+            /* padding: 20px; */
+            flex-direction: column;
+            /* font-size: 25px; */
+            background-color: black;  
+            overflow: hidden; /* Ensures no scrollbars for the header */
+            pointer-events: none;
+            
+
+        }
+        .header h1 {
+            margin: 10px 0; /* Equal margins for top and bottom */
+            font-size: 3rem; /* Adjust this for title size */
+            text-align: center;
+            color: #333; /* Adjust color as needed */
+        }
+
+
+        .header pre {
+            
+            font-family: 'Courier New', Courier, monospace; /* Use a monospaced font for ASCII art */
+            font-size: 1.2rem; /* Adjust the font size */
+            text-align: center;
+            color: #00ff00; /* Set the text color */
+            white-space: pre-wrap; /* Ensures text wraps properly */
+            animation: textFlicker 0.05s infinite;
+            pointer-events: none;
+            
+        }
+
+        
+
+        @keyframes textFlicker {
+            0% { text-shadow: 0 0 4px #00ff00; }
+            50% { text-shadow: 0 0 40px #00ff00; }
+            100% { text-shadow: 0 0 4px #00ff00; }
+        }
+
+        /* Terminal Section (2/3) */
+        #terminal {
+            height: 60.0vh;
+            overflow-y: auto;
+            padding: 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        #terminal::-webkit-scrollbar {
+            display: none;
+        }
+
+        #input-line {
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+
+        #prompt {
+            margin-right: 5px;
+            line-height: 1;
+        }
+
+        #command-input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            width: 100%;
+            line-height: 1;
+        }
+
+        .output-line {
+            margin: 0;
+            white-space: pre-wrap;
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .upload-link {
+            color: #00ff00;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-left: 5px;
+            line-height: 1;
+        }
+
+        #loading {
+            display: none;
+            color: #00ff00;
+            margin: 0;
+            line-height: 1;
+        }
+
+        #loading-blocks .block {
+            width: 12px;
+            height: 0.6em;
+            background-color: #00ff00;
+            margin-right: 4px;
+            display: inline-block;
+            opacity: 0;
+        }
+
+        @keyframes blockSequence {
+            0%, 100% { opacity: 0; }
+            5%, 45% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        #loading-blocks .block:nth-child(1) { animation: blockSequence 6s 0s infinite; }
+        #loading-blocks .block:nth-child(2) { animation: blockSequence 6s 0.5s infinite; }
+        #loading-blocks .block:nth-child(3) { animation: blockSequence 6s 1s infinite; }
+        #loading-blocks .block:nth-child(4) { animation: blockSequence 6s 1.5s infinite; }
+        #loading-blocks .block:nth-child(5) { animation: blockSequence 6s 2s infinite; }
+        #loading-blocks .block:nth-child(6) { animation: blockSequence 6s 2.5s infinite; }
+    
+        @media (max-height: 658px) {
+            .header pre {
+                font-size: 90%; /* Reduce font size for smaller heights */
+                padding-top:6%;
+                padding-bottom: 50px;
+                
+            }
+        }
+        @media (min-height: 659px) and (max-height: 800px){
+            .header pre {
+                /* font-size: 110%;  */
+                font-size: 1rem;
+                padding-top:8%;
+                padding-bottom: 80px;
+                
+            }
+        }
+        @media (min-height: 801px) and (max-height: 899px){
+            .header pre {
+                
+                font-size: 1.3rem;
+                padding-top:8%;
+                padding-bottom: 80px;
+                
+            }
+        }
+        @media (min-height: 900px) {
+            .header pre {
+                
+                font-size: 1.5rem;
+                padding-top:9%;
+                padding-bottom: 7%;
+                
+            }
+        }
+
+
+
+
+
+    
+    </style>
+</head>
+<body>
+    
+
+
+    <div class="header">
+        <pre>
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+              
+    
+    ░█▀▀█ ░█─░█ ░█▀▀▄ ▀█▀ ░█▀▀▀█ 　 ░█▀▄▀█ ░█▀▀▀█ ░█▀▀▄ ░█▀▀▀ ░█─── ░█▀▀▀█ 
+    ░█▄▄█ ░█─░█ ░█─░█ ░█─ ░█──░█ 　 ░█░█░█ ░█──░█ ░█─░█ ░█▀▀▀ ░█─── ─▀▀▀▄▄ 
+    ░█  █ ─▀▄▄▀ ░█▄▄▀ ▄█▄ ░█▄▄▄█ 　 ░█──░█ ░█▄▄▄█ ░█▄▄▀ ░█▄▄▄ ░█▄▄█ ░█▄▄▄█
+    
+    [SYS] Initialized audio processing modules...
+    [SYS] Models Loaded Successfully...
+    [SYS] System ready for input...
+    
+    
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+        </pre>
+    </div>
+    
+    <div id="terminal">
+        <div id="output"></div>
+        <div id="loading">
+            root@math:~$ Processing 
+            <span id="loading-blocks">
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+                <span class="block"></span>
+            </span>
+        </div>
+        <div id="input-line">
+            <span id="prompt">root@math:~$</span>
+            <input type="text" id="command-input" autocomplete="off">
+        </div>
+        <form id="upload-form" style="display: none;">
+            <input type="file" id="file-upload" accept=".mp3" style="display: none;">
+        </form>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const input = document.getElementById('command-input');
+        const output = document.getElementById('output');
+        const fileUpload = document.getElementById('file-upload');
+        const uploadForm = document.getElementById('upload-form');
+        const loading = document.getElementById('loading');
+
+        input.addEventListener('keypress', async function(e) {
+            if (e.key === 'Enter') {
+                const command = input.value.trim();
+                input.value = '';
+
+                addOutput(`root@math:~$ ${command}`);
+
+                if (command.toLowerCase() === 'clear') {
+                    output.innerHTML = '';
+                    return;
+                }
+
+                if (!command) {
+                    addOutput('root@math:~$ Please specify an operation: "classify" or "transcribe".');
+                    return;
+                }
+
+                try {
+                    loading.style.display = 'block';
+                    terminal.scrollTop = terminal.scrollHeight;
+                    
+                    const response = await fetch('/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ command: command })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    if (data.upload) {
+                        addOutput(`root@math:~$ Upload a .mp3 file for the ${command} operation <span class="upload-link" onclick="document.getElementById('file-upload').click()">[Upload File]</span>`);
+                    } else {
+                        addOutput(data.result.split('\n').join('<br>'));
+                    }
+                } catch (error) {
+                    addOutput(`root@math:~$ Error: ${error.message}`);
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+        });
+
+        fileUpload.addEventListener('change', async function() {
+            const file = fileUpload.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                loading.style.display = 'block';
+                terminal.scrollTop = terminal.scrollHeight;
+                
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                addOutput(data.result.split('\n').join('<br>'));
+            } catch (error) {
+                addOutput(`root@math:~$ Error: ${error.message}`);
+            } finally {
+                loading.style.display = 'none';
+                fileUpload.value = '';
+            }
+        });
+
+        function addOutput(text) {
+            const line = document.createElement('div');
+            line.className = 'output-line';
+            line.innerHTML = text;
+            output.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // Initial prompt
+        addOutput('root@math:~$ Please specify an operation: "classify" or "transcribe".');
+
+        // Focus input on load and when clicking anywhere in terminal
+        input.focus();
+        // document.addEventListener('click', (e) => {
+        //     if (!e.target.classList.contains('upload-link')) {
+        //         input.focus();
+        //     }
+        // });
+    </script>
+</body>
+</html>

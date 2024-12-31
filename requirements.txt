@@ -1,0 +1,17 @@
+flask
+librosa
+transformers
+numpy
+traceback2
+torch
+torchvision
+torchaudio
+pathlib
+keras==3.7.0
+uvicorn
+tensorflow-hub
+jax
+accelerate
+gunicorn
+soundfile
+audioread
