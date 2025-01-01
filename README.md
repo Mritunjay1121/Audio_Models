@@ -10,10 +10,16 @@ This repo contains the deployment of various use cases of Audio Models. Some of 
 First be the Audo Classification. Second being the Audio Transcription. The architecture of the classification Model has been created from scratch on the **ESC-50** dataset on 50 classes. For the Audio Transcription , pretrained models have been used.
 
 
-## Just Start by installing the requirments using 
+#### Just Start by installing the requirements using 
 
 ```
 pip install -r requirements.txt
+```
+
+#### Then just run the app file
+
+```
+python app.py
 ```
 
 
