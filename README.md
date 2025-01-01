@@ -10,11 +10,17 @@ This repo contains the deployment of various use cases of Audio Models. Some of 
 First be the Audo Classification. Second being the Audio Transcription. The architecture of the classification Model has been created from scratch on the **ESC-50** dataset on 50 classes. For the Audio Transcription , pretrained models have been used.
 
 
+## Just Start by installing the requirments using 
+
+```
+pip install -r requirements.txt
+```
+
 
 
 ## Models Created From Scratch
 
-The model has been been created from scratch using various iterations . It takes the input array of size (1024). its the specific size since all the audio files are first preprocessed using the SAMPLE_RATE=16000 . Then they embeddings are created using the Yamnet Model .
+The Audio Classification model has been been created from scratch using various iterations . It takes the input array of size (1024). its the specific size since all the audio files are first preprocessed using the SAMPLE_RATE=16000 . Then they embeddings are created using the Yamnet Model .
 
 
 
